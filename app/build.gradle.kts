@@ -1,3 +1,5 @@
+import java.util.Properties
+
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
@@ -7,10 +9,41 @@ plugins {
     alias(libs.plugins.ksp)
 }
 
+val localProperties = Properties()
+val localPropertiesFile =
+    rootProject.file("local.properties")
+
+if (localPropertiesFile.exists() && localPropertiesFile.isFile) {
+    try {
+        localPropertiesFile.inputStream().use { fis ->
+            localProperties.load(fis)
+        }
+    } catch (e: Exception) {
+        println("ADVERTENCIA: No se pudo cargar el archivo local.properties. ${e.message}")
+    }
+} else {
+    println("El archivo local.properties no fue encontrado en la raíz del proyecto.")
+}
+
+
+fun Properties.getPropertyOrDefault(propertyName: String, defaultValue: String): String {
+    val value = this.getProperty(propertyName)
+    return if (value == null || value.trim().isEmpty()) {
+        println("ADVERTENCIA: '${propertyName}' no está en local.properties o está vacía. Usando valor por defecto: '${defaultValue}'")
+        defaultValue
+    } else {
+        value
+    }
+}
+
+
+
 android {
     namespace = "com.myapp.duelvault"
-    compileSdk = 34
-
+    compileSdk = 36
+    buildFeatures {
+        buildConfig = true
+    }
     defaultConfig {
         applicationId = "com.myapp.duelvault"
         minSdk = 28
@@ -19,16 +52,6 @@ android {
         versionName = "1.0"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
-    }
-
-    buildTypes {
-        release {
-            isMinifyEnabled = false
-            proguardFiles(
-                getDefaultProguardFile("proguard-android-optimize.txt"),
-                "proguard-rules.pro"
-            )
-        }
     }
 
     compileOptions {
@@ -42,6 +65,64 @@ android {
 
     buildFeatures {
         compose = true
+    }
+
+    flavorDimensions += "environment"
+
+    productFlavors {
+
+        create("dev") {
+            dimension = "environment"
+            applicationIdSuffix = ".dev"
+            versionNameSuffix = "-dev"
+
+            buildConfigField(
+                "String",
+                "YGOPRODECK",
+                "\"${
+                    localProperties.getPropertyOrDefault(
+                        "YGOPRODECK",
+                        "DEFAULT_DEV_YGOPRODECK_KEY_FALLBACK"
+                    )
+                }\""
+            )
+        }
+        create("prod") {
+            dimension = "environment"
+            buildConfigField(
+                "String",
+                "YGOPRODECK",
+                "\"${
+                    localProperties.getPropertyOrDefault(
+                        "YGOPRODECK",
+                        "DEFAULT_DEV_YGOPRODECK_KEY_FALLBACK"
+                    )
+                }\""
+            )
+        }
+
+        signingConfigs {
+            create("release") {
+                keyAlias = "my_key_alias"
+                keyPassword = "my_key_password"
+                storeFile = file("my_keystore_example.jks")
+                storePassword = "my_keystore_example_password"
+            }
+        }
+
+
+        buildTypes {
+            getByName("debug") {
+                isMinifyEnabled = false
+            }
+            getByName("release") {
+                isMinifyEnabled = true
+                signingConfig = signingConfigs.getByName("release")
+                ndk {
+                    debugSymbolLevel = "FULL"
+                }
+            }
+        }
     }
 }
 
