@@ -1,4 +1,4 @@
-package com.myapp.duelvault.ui.theme
+package com.myapp.duelvault.utils.theme
 
 import androidx.compose.material3.Typography
 import androidx.compose.ui.text.TextStyle

@@ -1,3 +1,4 @@
+import com.android.sdklib.AndroidVersion.VersionCodes.VANILLA_ICE_CREAM
 import java.util.Properties
 
 plugins {
@@ -47,7 +48,7 @@ android {
     defaultConfig {
         applicationId = "com.myapp.duelvault"
         minSdk = 28
-        targetSdk = 34
+        targetSdk = VANILLA_ICE_CREAM
         versionCode = 1
         versionName = "1.0"
 
@@ -135,6 +136,7 @@ dependencies {
     implementation(libs.androidx.compose.ui.graphics)
     implementation(libs.androidx.compose.ui.tooling.preview)
     implementation(libs.androidx.compose.material3)
+    implementation(libs.androidx.lifecycle.runtime.compose)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
@@ -177,4 +179,6 @@ dependencies {
     implementation(libs.dataStore)
     implementation(libs.androidx.datastore.core.android)
 
+    // Navigation
+    implementation(libs.navigation.compose)
 }
