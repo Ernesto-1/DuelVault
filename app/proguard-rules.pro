@@ -46,7 +46,7 @@
 # Mantiene las clases internas de la librería de serialización.
 -keep class kotlinx.serialization.internal.* { *; }
 
-# Reemplaza 'com.kopek.petsall.data.network' con el paquete de tus interfaces de API.
+# Reemplaza 'com.mypets.duelvault.ome.data.remote.service' con el paquete de tus interfaces de API.
 -keep interface com.myapp.duelvault.home.data.remote.service.YGOApi { *; }
 
 # Reglas generales para OkHttp, Gson (si lo usas con Retrofit) y Retrofit.

@@ -12,6 +12,7 @@ import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -41,6 +42,14 @@ class HomeViewModel @Inject constructor(
 
     @OptIn(ExperimentalCoroutinesApi::class)
     val uiState: StateFlow<HomeState> = _limit
+        .onEach { limit ->
+            viewModelScope.launch {
+                try {
+                    useCase.updateCards(limit)
+                } catch (e: Exception) {
+                }
+            }
+        }
         .flatMapLatest { limit ->
             useCase.getCards(limit = limit)
         }
@@ -51,6 +60,7 @@ class HomeViewModel @Inject constructor(
                         isLoading = true
                     )
                 }
+
                 is Resource.Success -> {
                     HomeState(
                         isLoading = false,
@@ -58,8 +68,9 @@ class HomeViewModel @Inject constructor(
                         error = null
                     )
                 }
+
                 is Resource.Failure -> {
-                    uiState.value.copy(isLoading = false, error = "Error al cargar")
+                    uiState.value.copy(isLoading = false, error = "Error")
                 }
             }
         }
@@ -82,6 +93,7 @@ class HomeViewModel @Inject constructor(
             is HomeEvent.ChargingMoreCards -> {
                 loadMore()
             }
+
             is HomeEvent.DeleteCards -> {
                 handleDelete()
             }
@@ -94,7 +106,7 @@ class HomeViewModel @Inject constructor(
         }
     }
 
-    private fun handleDelete(){
+    private fun handleDelete() {
         viewModelScope.launch {
             useCase.deleteCards()
             _limit.value = 20

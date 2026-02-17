@@ -13,6 +13,8 @@ interface HomeRepo {
 
     suspend fun updateCards(offset: Int)
 
+    suspend fun getCurrentCardsCount(): Int
+
     suspend fun saveFavorite(
         id: Int
     )

@@ -24,6 +24,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -57,9 +58,9 @@ fun Welcome(onNavigate: (AppDestination) -> Unit, viewModel: WelcomeViewModel = 
             contentDescription = "Logo",
             modifier = Modifier.size(150.dp)
         )
-        Text("¡Bienvenido!", style = MaterialTheme.typography.headlineMedium)
+        Text(stringResource(R.string.onboarding), style = MaterialTheme.typography.headlineMedium)
         Spacer(modifier = Modifier.height(8.dp))
-        Text("¿Cómo te llamas?", style = MaterialTheme.typography.bodyLarge)
+        Text(stringResource(R.string.question_onboarding), style = MaterialTheme.typography.bodyLarge)
 
         OutlinedTextField(
             value = name,
@@ -68,7 +69,7 @@ fun Welcome(onNavigate: (AppDestination) -> Unit, viewModel: WelcomeViewModel = 
                     name = nuevoTexto
                 }
             },
-            label = { Text("Tu nombre") },
+            label = { Text(stringResource(R.string.Label_unboarding)) },
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(vertical = 16.dp),
@@ -84,7 +85,7 @@ fun Welcome(onNavigate: (AppDestination) -> Unit, viewModel: WelcomeViewModel = 
             modifier = Modifier.fillMaxWidth(),
             enabled = name.isNotBlank()
         ) {
-            Text("Empezar")
+            Text(stringResource(R.string.Button_go))
         }
     }
 }

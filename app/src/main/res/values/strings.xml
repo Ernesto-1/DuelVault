@@ -1,3 +1,12 @@
 <resources>
     <string name="app_name">DuelVault</string>
+    <string name="Button_favorites">My Favorites</string>
+    <string name="greeting">Hello %1$s.</string>
+    <string name="onboarding">¡Welcome!</string>
+    <string name="question_onboarding">¿What is your name?</string>
+    <string name="Button_go">Go</string>
+    <string name="Label_unboarding">Your name</string>
+    <string name="Collection_value">Collection value: </string>
+    <string name="empty_favorite">You do not have favorite cards</string>
+
 </resources>

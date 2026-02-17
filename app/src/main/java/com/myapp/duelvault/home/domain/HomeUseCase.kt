@@ -17,18 +17,17 @@ class HomeUseCase @Inject constructor(
         return repo.getCards(limit = limit)
             .map { cards ->
                 val data = cards.mapToCardEntity()
-                if (data.size <= limit) {
-                    updateCards(limit)
-
-                }
                 Resource.Success(data) as Resource<List<DataCard>>
             }
             .onStart { emit(Resource.Loading()) }
-            .catch { e -> emit(Resource.Failure(Message(data = e.message.toString()))) }
+            .catch { e -> emit(Resource.Failure(Message(data = e.message.toString(),code = 400))) }
     }
 
-    suspend fun updateCards(offset: Int ) {
-        repo.updateCards(offset)
+    suspend fun updateCards(limit: Int) {
+        val currentCards = repo.getCurrentCardsCount()
+        if (currentCards < limit) {
+            repo.updateCards(limit)
+        }
     }
 
     suspend fun saveFavorite(id: Int) {

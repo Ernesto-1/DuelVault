@@ -19,19 +19,25 @@ import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.myapp.duelvault.R
+import com.myapp.duelvault.home.presentation.skeleton.HomeSkeleton
 import com.myapp.duelvault.utils.components.CardItem
 import com.myapp.duelvault.utils.components.PullRefresh
 import com.myapp.duelvault.utils.components.TopBarGeneral
 import com.myapp.duelvault.utils.navigation.AppDestination
 import com.myapp.duelvault.utils.theme.backgroud
 import com.myapp.duelvault.utils.toTime
+import kotlinx.coroutines.launch
 
 @Composable
 fun Home(
@@ -41,6 +47,7 @@ fun Home(
     val userName = viewModel.userName.collectAsStateWithLifecycle().value
     val listState = rememberLazyGridState()
     val isRefreshing = remember { mutableStateOf(false) }
+    val coroutine = rememberCoroutineScope()
     val lastUpdate = viewModel.lastUpdate.collectAsStateWithLifecycle().value
     val isAtBottom by remember {
         derivedStateOf {
@@ -53,6 +60,10 @@ fun Home(
                 lastVisibleItem?.index == layoutInfo.totalItemsCount - 1
             }
         }
+    }
+    var clicked by remember { mutableStateOf(false) }
+    if (clicked) {
+        clicked = false
     }
 
     LaunchedEffect(isAtBottom) {
@@ -70,11 +81,14 @@ fun Home(
 
     Scaffold(
         modifier = Modifier.fillMaxSize(), containerColor = backgroud, topBar = {
-            TopBarGeneral(name = "Hola $userName", contentRight = {
+            TopBarGeneral(name = String.format(
+                stringResource(R.string.greeting),
+                userName
+            ), contentRight = {
                 OutlinedButton(onClick = {
 
                 }, contentPadding = PaddingValues(horizontal = 12.dp, vertical = 8.dp)) {
-                    Text("Mis favoritos", fontSize = 10.sp, modifier = Modifier.clickable {
+                    Text(stringResource(R.string.Button_favorites), fontSize = 10.sp, modifier = Modifier.clickable {
                         goNav(AppDestination.Favorite)
                     })
                 }
@@ -88,7 +102,7 @@ fun Home(
         ) {
             if (lastUpdate > 0) {
                 Text(
-                    "Última actualización: ${lastUpdate.toTime()}",
+                    "Last update: ${lastUpdate.toTime()}",
                     fontSize = 12.sp,
                     fontWeight = FontWeight.Medium,
                     modifier = Modifier.padding(vertical = 8.dp)
@@ -97,6 +111,9 @@ fun Home(
             PullRefresh(isRefreshing = isRefreshing, modifier = Modifier, onRefresh = {
                 isRefreshing.value = true
             }) {
+                if (state.isLoading) {
+                    HomeSkeleton()
+                }
                 LazyVerticalGrid(
                     state = listState,
                     columns = GridCells.Fixed(2),
@@ -115,7 +132,12 @@ fun Home(
                                 viewModel.onEvent(HomeEvent.SaveFavorite(card.id))
                             }
                         }, onItemClick = {
-                            goNav.invoke(AppDestination.Detail(card.id))
+                            coroutine.launch {
+                                if (!clicked) {
+                                    goNav.invoke(AppDestination.Detail(card.id))
+                                    clicked = true
+                                }
+                            }
                         })
                     }
                 }

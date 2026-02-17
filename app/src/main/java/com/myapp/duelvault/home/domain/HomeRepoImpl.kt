@@ -43,6 +43,10 @@ class HomeRepoImpl @Inject constructor(
         }
     }
 
+    override suspend fun getCurrentCardsCount(): Int {
+        return dao.getCurrentCardsCount()
+    }
+
     override suspend fun saveFavorite(id: Int) {
         daoFavorites.saveFavorite(id)
     }

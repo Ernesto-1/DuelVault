@@ -26,6 +26,9 @@ interface DataCardDao {
     )
     fun getCards(limit: Int): Flow<List<CardWithFavorite>>
 
+    @Query("SELECT COUNT(*) FROM cards")
+    fun getCurrentCardsCount(): Int
+
     @Query(
         """
     SELECT 
