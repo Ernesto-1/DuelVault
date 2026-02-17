@@ -2,6 +2,7 @@ package com.myapp.duelvault.home.presentation.mapper
 
 import com.myapp.duelvault.home.data.local.Converters
 import com.myapp.duelvault.home.data.local.entitys.CardWithFavorite
+import com.myapp.duelvault.home.presentation.model.DataCard
 
 fun List<CardWithFavorite>.mapToCardEntity(): List<DataCard> {
     return map { item ->
@@ -29,13 +30,3 @@ fun CardWithFavorite.mapListCard(): DataCard {
         isFavorite = this.isFavorite
     )
 }
-
-data class DataCard(
-    val id: Int = -1,
-    val name: String = "",
-    val type: String = "",
-    val frameType: String = "",
-    val cardImage: String = "",
-    val cardPrice: String = "",
-    val isFavorite: Boolean = false
-)

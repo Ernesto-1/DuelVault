@@ -21,10 +21,6 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -45,9 +41,8 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import com.myapp.duelvault.R
-import com.myapp.duelvault.home.presentation.CardItem
-import com.myapp.duelvault.home.presentation.ItemFavorite
-import com.myapp.duelvault.home.presentation.TopBarGeneral
+import com.myapp.duelvault.utils.components.ItemFavorite
+import com.myapp.duelvault.utils.components.TopBarGeneral
 import com.myapp.duelvault.utils.theme.backgroud
 
 @Composable
@@ -183,7 +178,7 @@ fun DetailCard(onBack: () -> Unit = {}, viewModel: DetailViewModel = hiltViewMod
                         containerColor = Color(0xFF8B4513)
                     ) {
                         Text(
-                            text = state.card.attribute, color = Color.White,
+                            text = state.card.attribute, color = White,
                             modifier = Modifier.padding(horizontal = 12.dp, vertical = 8.dp)
                         )
                     }
@@ -196,7 +191,7 @@ fun DetailCard(onBack: () -> Unit = {}, viewModel: DetailViewModel = hiltViewMod
                     ) {
                         Text(
                             text = state.card.race,
-                            color = Color.White,
+                            color = White,
                             modifier = Modifier.padding(horizontal = 12.dp, vertical = 8.dp)
                         )
                     }

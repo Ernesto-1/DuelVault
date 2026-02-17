@@ -2,10 +2,7 @@ package com.myapp.duelvault.home.presentation.favorite
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.myapp.duelvault.home.domain.HomeUseCase
 import com.myapp.duelvault.home.domain.favorite.FavoriteUseCase
-import com.myapp.duelvault.home.presentation.HomeEvent
-import com.myapp.duelvault.home.presentation.HomeState
 import com.myapp.duelvault.utils.Resource
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.ExperimentalCoroutinesApi

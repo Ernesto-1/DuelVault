@@ -1,6 +1,6 @@
 package com.myapp.duelvault.home.presentation.favorite
 
-import com.myapp.duelvault.home.presentation.mapper.DataCard
+import com.myapp.duelvault.home.presentation.model.DataCard
 
 data class FavoriteState(
     val isLoading: Boolean = false,

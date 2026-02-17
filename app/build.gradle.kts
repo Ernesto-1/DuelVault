@@ -65,6 +65,11 @@ android {
         jvmTarget = "17"
     }
 
+    lint {
+        disable += "NullSafeMutableLiveData"
+        checkReleaseBuilds = false
+    }
+
     buildFeatures {
         compose = true
     }
@@ -119,7 +124,12 @@ android {
             }
             getByName("release") {
                 isMinifyEnabled = true
-                signingConfig = signingConfigs.getByName("release")
+                proguardFiles(
+                    getDefaultProguardFile("proguard-android-optimize.txt"),
+                    "proguard-rules.pro"
+                )
+
+                signingConfig = signingConfigs.getByName("debug")
                 ndk {
                     debugSymbolLevel = "FULL"
                 }

@@ -1,8 +1,8 @@
 package com.myapp.duelvault.home.domain.favorite
 
 import com.myapp.duelvault.home.domain.HomeRepo
-import com.myapp.duelvault.home.presentation.mapper.DataCard
 import com.myapp.duelvault.home.presentation.mapper.mapToCardEntity
+import com.myapp.duelvault.home.presentation.model.DataCard
 import com.myapp.duelvault.utils.Resource
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.catch

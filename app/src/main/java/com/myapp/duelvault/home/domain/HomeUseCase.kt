@@ -1,7 +1,7 @@
 package com.myapp.duelvault.home.domain
 
-import com.myapp.duelvault.home.presentation.mapper.DataCard
 import com.myapp.duelvault.home.presentation.mapper.mapToCardEntity
+import com.myapp.duelvault.home.presentation.model.DataCard
 import com.myapp.duelvault.utils.Message
 import com.myapp.duelvault.utils.Resource
 import kotlinx.coroutines.flow.Flow

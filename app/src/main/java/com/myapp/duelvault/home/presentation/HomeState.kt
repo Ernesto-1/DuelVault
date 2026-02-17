@@ -1,6 +1,6 @@
 package com.myapp.duelvault.home.presentation
 
-import com.myapp.duelvault.home.presentation.mapper.DataCard
+import com.myapp.duelvault.home.presentation.model.DataCard
 
 data class HomeState(
     val isLoading: Boolean = false,
