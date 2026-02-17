@@ -17,7 +17,8 @@ data class CardEntity(
     val race: String = "",
     val attribute: String = "",
     val cardImages: String = "",
-    val cardPrices: String = ""
+    val cardPrices: String = "",
+    val createdAt: Long = System.currentTimeMillis()
 )
 
 data class CardWithFavorite(

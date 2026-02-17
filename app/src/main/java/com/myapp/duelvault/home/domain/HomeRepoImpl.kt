@@ -1,6 +1,5 @@
 package com.myapp.duelvault.home.domain
 
-import android.util.Log
 import com.myapp.duelvault.home.data.local.dao.DataCardDao
 import com.myapp.duelvault.home.data.local.dao.FavoritesDao
 import com.myapp.duelvault.home.data.local.entitys.CardWithFavorite
@@ -8,7 +7,6 @@ import com.myapp.duelvault.home.data.remote.HomeDataSource
 import com.myapp.duelvault.home.domain.mapper.mapToCardEntity
 import com.myapp.duelvault.utils.datastore.PreferencesRepository
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.first
 import javax.inject.Inject
 
 class HomeRepoImpl @Inject constructor(
@@ -30,24 +28,19 @@ class HomeRepoImpl @Inject constructor(
         return dao.getCard(id)
     }
 
-    override suspend fun updateCards() {
-        val offset = preferencesRepo.currentOffset
+    override suspend fun updateCards(offset: Int) {
 
         try {
             val data = dataSource.getDataAddress(
                 num = 20,
-                offset = offset.first()
+                offset = offset
             ).data
-
 
             if (data != null) {
                 dao.upsertCards(data.mapToCardEntity())
-                preferencesRepo.saveOffset(offset.first() + 20)
-                Log.d("tfcvygbhnj", preferencesRepo.currentOffset.first().toString())
             }
 
         } catch (e: Exception) {
-            Log.d("tfcvygbhnj7", e.toString())
             throw e
         }
     }

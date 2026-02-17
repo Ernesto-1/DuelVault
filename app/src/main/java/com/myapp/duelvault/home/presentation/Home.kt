@@ -62,7 +62,7 @@ fun Home(
 ) {
     val state = viewModel.uiState.collectAsStateWithLifecycle().value
     val listState = rememberLazyGridState()
-    var isRefreshing = remember { mutableStateOf(false) }
+    val isRefreshing = remember { mutableStateOf(false) }
 
     val isAtBottom by remember {
         derivedStateOf {
@@ -85,7 +85,7 @@ fun Home(
 
     Scaffold(
         modifier = Modifier.fillMaxSize(), containerColor = backgroud, topBar = {
-            TopBarGeneral(name = "Hola", contentRight = {
+            TopBarGeneral(name = state.cards.size.toString(), contentRight = {
                 OutlinedButton(onClick = {
 
                 }, contentPadding = PaddingValues(horizontal = 12.dp, vertical = 8.dp)) {
@@ -109,7 +109,7 @@ fun Home(
                     verticalArrangement = Arrangement.spacedBy(8.dp),
                     horizontalArrangement = Arrangement.spacedBy(8.dp),
                 ) {
-                    items(state.cards, key = { it.id }) { card ->
+                    items(state.cards, key = { it.id },contentType = { "dv_card" }) { card ->
                         CardItem(card = card, isFavorite = card.isFavorite, clickIcon = {
                             if (card.isFavorite) {
                                 viewModel.onEvent(HomeEvent.DeleteFavorite(card.id))
@@ -122,36 +122,6 @@ fun Home(
                     }
                 }
             }
-        }
-    }
-}
-
-@Composable
-fun LazyCards(
-    list: List<DataCard> = emptyList(),
-    goNav: (AppDestination) -> Unit = {},
-    unmask: (Int) -> Unit = {},
-    mask: (Int) -> Unit = {},
-) {
-    val listState = rememberLazyGridState()
-
-    LazyVerticalGrid(
-        state = listState,
-        columns = GridCells.Fixed(2),
-        contentPadding = PaddingValues(vertical = 16.dp, horizontal = 12.dp),
-        verticalArrangement = Arrangement.spacedBy(8.dp),
-        horizontalArrangement = Arrangement.spacedBy(8.dp),
-    ) {
-        items(list, key = { it.id }) { card ->
-            CardItem(card = card, isFavorite = card.isFavorite, clickIcon = {
-                if (card.isFavorite) {
-                    unmask.invoke(card.id)
-                } else {
-                    mask.invoke(card.id)
-                }
-            }, onItemClick = {
-                goNav.invoke(AppDestination.Detail(card.id))
-            })
         }
     }
 }

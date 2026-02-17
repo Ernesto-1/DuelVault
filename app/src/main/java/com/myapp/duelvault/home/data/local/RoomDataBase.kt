@@ -15,7 +15,7 @@ import com.myapp.duelvault.home.data.remote.model.response.CardPrices
 
 @Database(
     entities = [CardEntity::class, CardsFavoritesEntity::class],
-    version = 2,
+    version = 3,
     exportSchema = false
 )
 

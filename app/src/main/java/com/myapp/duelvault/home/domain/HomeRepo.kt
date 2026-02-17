@@ -11,7 +11,7 @@ interface HomeRepo {
 
     suspend fun getCard(id: Int): Flow<CardWithFavorite?>
 
-    suspend fun updateCards()
+    suspend fun updateCards(offset: Int)
 
     suspend fun saveFavorite(
         id: Int

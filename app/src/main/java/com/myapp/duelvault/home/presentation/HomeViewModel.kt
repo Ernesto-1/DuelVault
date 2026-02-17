@@ -1,5 +1,6 @@
 package com.myapp.duelvault.home.presentation
 
+import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.myapp.duelvault.home.domain.HomeUseCase
@@ -7,7 +8,6 @@ import com.myapp.duelvault.utils.Resource
 import com.myapp.duelvault.utils.datastore.PreferencesRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.flatMapLatest
@@ -20,10 +20,10 @@ import javax.inject.Inject
 class HomeViewModel @Inject constructor(
     private val useCase: HomeUseCase,
     private val preferencesRepo: PreferencesRepository,
+    savedStateHandle: SavedStateHandle
 ) : ViewModel() {
 
-    private val _limit = MutableStateFlow(20)
-
+    private val _limit = savedStateHandle.getMutableStateFlow("limit_key", 20)
     @OptIn(ExperimentalCoroutinesApi::class)
     val uiState: StateFlow<HomeState> = _limit
         .flatMapLatest { limit ->
@@ -56,9 +56,17 @@ class HomeViewModel @Inject constructor(
 
     fun onEvent(event: HomeEvent) {
         when (event) {
-            is HomeEvent.SaveFavorite -> handleChangeFavorite(event.id)
-            is HomeEvent.DeleteFavorite -> handleDeleteFavorite(event.id)
-            is HomeEvent.ChargingMoreCards -> loadMore()
+            is HomeEvent.SaveFavorite -> {
+                handleChangeFavorite(event.id)
+            }
+
+            is HomeEvent.DeleteFavorite -> {
+                handleDeleteFavorite(event.id)
+            }
+
+            is HomeEvent.ChargingMoreCards -> {
+                loadMore()
+            }
         }
     }
 

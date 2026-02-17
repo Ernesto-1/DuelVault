@@ -3,11 +3,9 @@ package com.myapp.duelvault.home.domain.detail
 import com.myapp.duelvault.home.domain.HomeRepo
 import com.myapp.duelvault.home.presentation.mapper.DataCard
 import com.myapp.duelvault.home.presentation.mapper.mapListCard
-import com.myapp.duelvault.home.presentation.mapper.mapToCardEntity
 import com.myapp.duelvault.utils.Resource
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.catch
-import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onStart
 import javax.inject.Inject

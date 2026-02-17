@@ -8,6 +8,7 @@ plugins {
     alias(libs.plugins.kotlin.compose)
     alias(libs.plugins.kotlinxSerialization)
     alias(libs.plugins.ksp)
+
 }
 
 val localProperties = Properties()
@@ -181,4 +182,5 @@ dependencies {
 
     // Navigation
     implementation(libs.navigation.compose)
+    implementation(libs.kotlinx.serialization.json)
 }

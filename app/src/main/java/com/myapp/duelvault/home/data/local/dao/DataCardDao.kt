@@ -20,7 +20,7 @@ interface DataCardDao {
         (favorites.id IS NOT NULL) AS isFavorite 
     FROM cards 
     LEFT JOIN favorites ON cards.id = favorites.id
-    ORDER BY cards.id ASC 
+    ORDER BY cards.createdAt ASC 
     LIMIT :limit OFFSET 0
 """
     )
@@ -33,7 +33,7 @@ interface DataCardDao {
         1 AS isFavorite 
     FROM cards 
     INNER JOIN favorites ON cards.id = favorites.id
-    ORDER BY cards.id ASC
+    ORDER BY cards.createdAt ASC
     LIMIT :limit OFFSET 0
 """
     )

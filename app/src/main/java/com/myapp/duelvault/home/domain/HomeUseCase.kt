@@ -2,6 +2,7 @@ package com.myapp.duelvault.home.domain
 
 import com.myapp.duelvault.home.presentation.mapper.DataCard
 import com.myapp.duelvault.home.presentation.mapper.mapToCardEntity
+import com.myapp.duelvault.utils.Message
 import com.myapp.duelvault.utils.Resource
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.catch
@@ -16,16 +17,18 @@ class HomeUseCase @Inject constructor(
         return repo.getCards(limit = limit)
             .map { cards ->
                 val data = cards.mapToCardEntity()
-                if (data.isEmpty()) {
-                    updateCards()
+                if (data.size <= limit) {
+                    updateCards(limit)
+
                 }
-                Resource.Success(data) as Resource<List<DataCard>> }
+                Resource.Success(data) as Resource<List<DataCard>>
+            }
             .onStart { emit(Resource.Loading()) }
-            .catch { e -> emit(Resource.Failure()) }
+            .catch { e -> emit(Resource.Failure(Message(data = e.message.toString()))) }
     }
 
-    suspend fun updateCards() {
-        repo.updateCards()
+    suspend fun updateCards(offset: Int ) {
+        repo.updateCards(offset)
     }
 
     suspend fun saveFavorite(id: Int) {
