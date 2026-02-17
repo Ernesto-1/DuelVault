@@ -1,4 +1,5 @@
 DuelVault - Android Technical Test
+
 Hola buen dia ! DuelVault es una aplicación de Android construida con las últimas tecnologías de desarrollo (Kotlin 2.0 y Jetpack Compose). 
 La aplicación permite gestionar y visualizar información de cartas de Yu-Gi-Oh! consumiendo la API de YGOPRODECK.
 
