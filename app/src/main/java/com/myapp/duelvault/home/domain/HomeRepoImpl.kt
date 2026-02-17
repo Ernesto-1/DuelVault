@@ -13,7 +13,6 @@ class HomeRepoImpl @Inject constructor(
     private val dataSource: HomeDataSource,
     private val dao: DataCardDao,
     private val daoFavorites: FavoritesDao,
-    private val preferencesRepo: PreferencesRepository,
 ) : HomeRepo {
 
     override suspend fun getCards(limit: Int): Flow<List<CardWithFavorite>> {
@@ -51,6 +50,10 @@ class HomeRepoImpl @Inject constructor(
 
     override suspend fun deleteFavorite(id: Int) {
         daoFavorites.deleteCards(id)
+    }
+
+    override suspend fun deleteCards() {
+        dao.deleteCards()
     }
 
 }

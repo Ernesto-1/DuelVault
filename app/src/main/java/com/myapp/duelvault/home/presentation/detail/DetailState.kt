@@ -1,8 +1,8 @@
 package com.myapp.duelvault.home.presentation.detail
 
-import com.myapp.duelvault.home.presentation.mapper.DataCard
+import com.myapp.duelvault.home.presentation.mapper.DataDetail
 
 data class DetailState(
     val isLoading: Boolean = false,
-    val card: DataCard = DataCard(),
+    val card: DataDetail = DataDetail(),
 )

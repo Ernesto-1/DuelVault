@@ -8,6 +8,13 @@ sealed interface AppDestination {
     object Onboarding : AppDestination
 
     @Serializable
+    object Splash : AppDestination
+
+    @Serializable
+    object Welcome : AppDestination
+
+
+    @Serializable
     object DashboardGraph : AppDestination
 
     @Serializable

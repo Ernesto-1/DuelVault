@@ -39,4 +39,8 @@ class HomeUseCase @Inject constructor(
         repo.deleteFavorite(id)
     }
 
+    suspend fun deleteCards() {
+        repo.deleteCards()
+    }
+
 }

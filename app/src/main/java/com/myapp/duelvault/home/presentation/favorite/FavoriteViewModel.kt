@@ -39,10 +39,16 @@ class FavoriteViewModel @Inject constructor(
                 }
 
                 is Resource.Success -> {
+                    val prices = result.data.map { it.cardPrice }
+                    val total = prices.sumOf { it.toDouble() }
+
+
                     FavoriteState(
                         isLoading = false,
                         cards = result.data.distinct(),
-                        error = null
+                        error = null,
+                        total = total
+
                     )
                 }
 

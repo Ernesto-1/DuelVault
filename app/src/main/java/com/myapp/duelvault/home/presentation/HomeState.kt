@@ -6,5 +6,5 @@ data class HomeState(
     val isLoading: Boolean = false,
     val cards: List<DataCard> = emptyList(),
     val isRefreshing: Boolean = false,
-    val error: String? = null,
+    val error: String? = null
 )

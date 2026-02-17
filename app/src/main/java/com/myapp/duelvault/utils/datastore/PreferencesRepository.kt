@@ -5,6 +5,8 @@ import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.intPreferencesKey
+import androidx.datastore.preferences.core.longPreferencesKey
+import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.datastore.preferences.preferencesDataStore
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.flow.Flow
@@ -19,14 +21,24 @@ class PreferencesRepository @Inject constructor(
     private val Context.dataStore: DataStore<Preferences> by preferencesDataStore(name = "Duel_preferences")
 
 
-    val currentOffset: Flow<Int> = context.dataStore.data
+    val lastUpdate: Flow<Long> = context.dataStore.data
         .map { preferences ->
             preferences[PreferencesKeys.currentOffset] ?: 0
         }
 
-    suspend fun saveOffset(offset: Int) {
-        savePreference(PreferencesKeys.currentOffset, offset)
+    val userName: Flow<String> = context.dataStore.data
+        .map { preferences ->
+            preferences[PreferencesKeys.userName] ?: ""
+        }
+
+    suspend fun saveLastUpdate(time: Long) {
+        savePreference(PreferencesKeys.currentOffset, time)
     }
+
+    suspend fun saveUserName(name: String) {
+        savePreference(PreferencesKeys.userName, name)
+    }
+
 
     private suspend fun <T> savePreference(key: Preferences.Key<T>, value: T) {
         context.dataStore.edit { preferences ->
@@ -37,6 +49,9 @@ class PreferencesRepository @Inject constructor(
 
 private object PreferencesKeys {
 
-    val currentOffset = intPreferencesKey("offset")
+    val currentOffset = longPreferencesKey("time")
+
+    val userName = stringPreferencesKey("name")
+
 
 }

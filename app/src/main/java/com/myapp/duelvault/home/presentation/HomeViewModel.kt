@@ -24,6 +24,21 @@ class HomeViewModel @Inject constructor(
 ) : ViewModel() {
 
     private val _limit = savedStateHandle.getMutableStateFlow("limit_key", 20)
+
+    val lastUpdate: StateFlow<Long> = preferencesRepo.lastUpdate
+        .stateIn(
+            scope = viewModelScope,
+            started = SharingStarted.WhileSubscribed(5000),
+            initialValue = 0
+        )
+
+    val userName: StateFlow<String> = preferencesRepo.userName
+        .stateIn(
+            scope = viewModelScope,
+            started = SharingStarted.WhileSubscribed(5000),
+            initialValue = ""
+        )
+
     @OptIn(ExperimentalCoroutinesApi::class)
     val uiState: StateFlow<HomeState> = _limit
         .flatMapLatest { limit ->
@@ -67,12 +82,23 @@ class HomeViewModel @Inject constructor(
             is HomeEvent.ChargingMoreCards -> {
                 loadMore()
             }
+            is HomeEvent.DeleteCards -> {
+                handleDelete()
+            }
         }
     }
 
     private fun loadMore() {
         if (!uiState.value.isLoading) {
             _limit.value += 20
+        }
+    }
+
+    private fun handleDelete(){
+        viewModelScope.launch {
+            useCase.deleteCards()
+            _limit.value = 20
+            preferencesRepo.saveLastUpdate(System.currentTimeMillis())
         }
     }
 

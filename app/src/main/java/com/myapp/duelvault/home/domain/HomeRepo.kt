@@ -21,4 +21,6 @@ interface HomeRepo {
         id: Int
     )
 
+    suspend fun deleteCards()
+
 }

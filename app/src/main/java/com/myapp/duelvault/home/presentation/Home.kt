@@ -26,6 +26,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.pulltorefresh.PullToRefreshBox
+import androidx.compose.material3.pulltorefresh.rememberPullToRefreshState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.MutableState
@@ -55,15 +56,18 @@ import com.myapp.duelvault.home.presentation.mapper.DataCard
 import com.myapp.duelvault.utils.navigation.AppDestination
 import com.myapp.duelvault.utils.theme.backgroud
 import com.myapp.duelvault.utils.theme.favoriteColor
+import com.myapp.duelvault.utils.toTime
+import androidx.compose.runtime.collectAsState
 
 @Composable
 fun Home(
     goNav: (AppDestination) -> Unit = {}, viewModel: HomeViewModel = hiltViewModel()
 ) {
     val state = viewModel.uiState.collectAsStateWithLifecycle().value
+    val userName = viewModel.userName.collectAsStateWithLifecycle().value
     val listState = rememberLazyGridState()
     val isRefreshing = remember { mutableStateOf(false) }
-
+    val lastUpdate = viewModel.lastUpdate.collectAsStateWithLifecycle().value
     val isAtBottom by remember {
         derivedStateOf {
             val layoutInfo = listState.layoutInfo
@@ -83,9 +87,16 @@ fun Home(
         }
     }
 
+    LaunchedEffect(isRefreshing.value) {
+        if (isRefreshing.value) {
+            viewModel.onEvent(HomeEvent.DeleteCards)
+            isRefreshing.value = false
+        }
+    }
+
     Scaffold(
         modifier = Modifier.fillMaxSize(), containerColor = backgroud, topBar = {
-            TopBarGeneral(name = state.cards.size.toString(), contentRight = {
+            TopBarGeneral(name = "Hola $userName", contentRight = {
                 OutlinedButton(onClick = {
 
                 }, contentPadding = PaddingValues(horizontal = 12.dp, vertical = 8.dp)) {
@@ -98,19 +109,29 @@ fun Home(
         Column(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(it)
+                .padding(it),
+            horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            PullRefresh(isRefreshing = isRefreshing, modifier = Modifier) {
-
+            if (lastUpdate > 0){
+                Text(
+                    "Última actualización: ${lastUpdate.toTime()}",
+                    fontSize = 12.sp,
+                    fontWeight = FontWeight.Medium,
+                    modifier = Modifier.padding(vertical = 8.dp)
+                )
+            }
+            PullRefresh(isRefreshing = isRefreshing, modifier = Modifier, onRefresh = {
+                isRefreshing.value = true
+            }) {
                 LazyVerticalGrid(
                     state = listState,
                     columns = GridCells.Fixed(2),
-                    contentPadding = PaddingValues(vertical = 16.dp, horizontal = 12.dp),
+                    contentPadding = PaddingValues(vertical = 8.dp, horizontal = 12.dp),
                     verticalArrangement = Arrangement.spacedBy(8.dp),
                     horizontalArrangement = Arrangement.spacedBy(8.dp),
                 ) {
-                    items(state.cards, key = { it.id },contentType = { "dv_card" }) { card ->
-                        CardItem(card = card, isFavorite = card.isFavorite, clickIcon = {
+                    items(state.cards, key = { it.id }, contentType = { "dv_card" }) { card ->
+                        CardItem(card = card, clickIcon = {
                             if (card.isFavorite) {
                                 viewModel.onEvent(HomeEvent.DeleteFavorite(card.id))
                             } else {
@@ -129,8 +150,9 @@ fun Home(
 @Composable
 fun CardItem(
     card: DataCard,
+    isDetail: Boolean = false,
+    imageSize: Int = 150,
     onItemClick: () -> Unit = {},
-    isFavorite: Boolean = false,
     clickIcon: () -> Unit = {}
 ) {
     val density = LocalDensity.current
@@ -152,10 +174,10 @@ fun CardItem(
                     card.cardImage
                 ).size(
                     with(density) { LocalConfiguration.current.screenWidthDp.dp.roundToPx() },
-                    with(density) { 150.dp.roundToPx() }).crossfade(true).build(),
+                    with(density) { imageSize.dp.roundToPx() }).crossfade(true).build(),
                 contentDescription = "Image_card",
                 contentScale = ContentScale.Fit,
-                modifier = Modifier.size(150.dp)
+                modifier = Modifier.size(imageSize.dp)
             )
             Text(
                 card.name,
@@ -165,12 +187,18 @@ fun CardItem(
                 maxLines = 2,
                 minLines = 2
             )
-            Row(
-                modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween
-            ) {
+            if (isDetail) {
+                Text(card.type, fontSize = 10.sp)
                 Text(card.cardPrice + "$", fontSize = 10.sp)
-                ItemFavorite(isFavorite = isFavorite) {
-                    clickIcon.invoke()
+            } else {
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.SpaceBetween
+                ) {
+                    Text(card.cardPrice + "$", fontSize = 10.sp)
+                    ItemFavorite(isFavorite = card.isFavorite) {
+                        clickIcon.invoke()
+                    }
                 }
             }
         }
@@ -227,15 +255,17 @@ fun TopBarGeneral(
 
 @Composable
 fun PullRefresh(
-    modifier: Modifier, isRefreshing: MutableState<Boolean>, content: @Composable () -> Unit = {}
+    modifier: Modifier,
+    isRefreshing: MutableState<Boolean>,
+    onRefresh: () -> Unit = {},
+    content: @Composable () -> Unit = {}
 ) {
-    val onRefresh: () -> Unit = {
-        isRefreshing.value = true
-    }
+    val state = rememberPullToRefreshState()
     PullToRefreshBox(
         isRefreshing = isRefreshing.value,
         onRefresh = onRefresh,
         modifier = modifier,
+        state = state,
         contentAlignment = Alignment.TopCenter
     ) {
         content()

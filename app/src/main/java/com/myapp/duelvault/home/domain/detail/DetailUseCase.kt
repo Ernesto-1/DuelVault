@@ -2,6 +2,8 @@ package com.myapp.duelvault.home.domain.detail
 
 import com.myapp.duelvault.home.domain.HomeRepo
 import com.myapp.duelvault.home.presentation.mapper.DataCard
+import com.myapp.duelvault.home.presentation.mapper.DataDetail
+import com.myapp.duelvault.home.presentation.mapper.mapDetailCard
 import com.myapp.duelvault.home.presentation.mapper.mapListCard
 import com.myapp.duelvault.utils.Resource
 import kotlinx.coroutines.flow.Flow
@@ -14,11 +16,11 @@ class DetailUseCase @Inject constructor(
     private val repo: HomeRepo
 ) {
 
-    suspend fun getCard(id: Int): Flow<Resource<DataCard>> {
+    suspend fun getCard(id: Int): Flow<Resource<DataDetail>> {
         return repo.getCard(id)
             .map {
-                val data = it?.mapListCard()
-                Resource.Success(data) as Resource<DataCard>
+                val data = it?.mapDetailCard()
+                Resource.Success(data) as Resource<DataDetail>
             }
             .onStart { emit(Resource.Loading()) }
             .catch { emit(Resource.Failure()) }

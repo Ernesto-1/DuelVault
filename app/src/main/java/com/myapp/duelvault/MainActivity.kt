@@ -16,6 +16,8 @@ import androidx.navigation.compose.rememberNavController
 import com.myapp.duelvault.home.presentation.Home
 import com.myapp.duelvault.home.presentation.detail.DetailCard
 import com.myapp.duelvault.home.presentation.favorite.FavoriteCards
+import com.myapp.duelvault.onboarding.presentation.Welcome
+import com.myapp.duelvault.onboarding.presentation.splash.SplashScreen
 import com.myapp.duelvault.utils.navigation.AppDestination
 import com.myapp.duelvault.utils.theme.DuelVaultTheme
 import dagger.hilt.android.AndroidEntryPoint
@@ -36,9 +38,35 @@ class MainActivity : ComponentActivity() {
                 ) { innerPadding ->
                     NavHost(
                         navController = navigationController,
-                        startDestination = AppDestination.DashboardGraph::class,
+                        startDestination = AppDestination.Onboarding::class,
                         Modifier.padding(innerPadding)
                     ) {
+                        navigation(
+                            startDestination = AppDestination.Splash,
+                            route = AppDestination.Onboarding::class
+                        ) {
+                            composable<AppDestination.Splash> {
+                                SplashScreen(onNavigate = {
+                                    if (it is AppDestination.Welcome) {
+                                        navigationController.navigate(it)
+                                    }else{
+                                        navigationController.navigate(it) {
+                                            popUpTo(AppDestination.Onboarding) { inclusive = true }
+                                            launchSingleTop = true
+                                        }
+                                    }
+
+                                })
+                            }
+                            composable<AppDestination.Welcome> {
+                                Welcome(onNavigate = {
+                                    navigationController.navigate(it) {
+                                        popUpTo(AppDestination.Onboarding) { inclusive = true }
+                                        launchSingleTop = true
+                                    }
+                                })
+                            }
+                        }
                         navigation(
                             startDestination = AppDestination.Home,
                             route = AppDestination.DashboardGraph::class
